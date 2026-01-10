@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/RiskCheck.css';
+import '../styles/Riskcheck.css';
 
 // The comprehensive list of questions (unchanged from initial plan)
 const QUESTIONS = [

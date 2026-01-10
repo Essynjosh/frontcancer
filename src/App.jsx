@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react
 import { AuthProvider, useAuth } from './context/AuthContext'; 
 
 // --- Import All Core Pages ---
-import LandingPage from './pages/LandingPage'; 
-import RiskCheck from './pages/RiskCheck';
-import ClinicLocator from './pages/ClinicLocator'; 
+import LandingPage from './pages/Landingpage'; 
+import RiskCheck from './pages/Riskcheck';
+import ClinicLocator from './pages/Cliniclocator'; 
 import Progress from './pages/Progress';
-import Login from './pages/Login';
+import Login from './pages/login';
 import Register from './pages/Register'; 
 import SessionDetails from './pages/SessionDetails'; 
 import SavingsGoal from './pages/SavingsGoal'; 

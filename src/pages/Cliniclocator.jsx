@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/ClinicLocator.css'; 
+import '../styles/Cliniclocator.css'; 
 
 // Mock data list for filter options (matching backend ENUMs and data)
 const COUNTY_OPTIONS = ['Nairobi', 'Nakuru', 'Mombasa', 'Kisumu'];
