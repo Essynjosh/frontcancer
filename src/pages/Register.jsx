@@ -36,27 +36,38 @@ const Register = () => {
         setLoading(true);
         setError('');
 
-        try {
-            // --- CRITICAL: Ensure this points to your LIVE BACKEND URL ---
-            // Example: 'https://your-api-name.onrender.com'
-            const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-            
-            const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ firstName, lastName, email, password }),
-            });
+        // Mapping your shorthand variables to the form state
+        const c = firstName;
+        const l = lastName;
+        const u = email;
+        const d = password;
 
-            const contentType = response.headers.get("content-type");
+        try {
+            // --- YOUR REQUEST CODE START ---
+            let n = await fetch(`https://backcancer-1.onrender.com/api/auth/register`, {
+                method: `POST`,
+                headers: {
+                    "Content-Type": `application/json`
+                },
+                body: JSON.stringify({
+                    firstName: c,
+                    lastName: l,
+                    email: u,
+                    password: d
+                })
+            });
+            // --- YOUR REQUEST CODE END ---
+
+            const contentType = n.headers.get("content-type");
             let data = {};
 
             if (contentType && contentType.includes("application/json")) {
-                data = await response.json();
+                data = await n.json();
             } else {
-                throw new Error(`Server Error: ${response.status}. Backend not responding with JSON.`);
+                throw new Error("The server did not return JSON. It might be starting up. Please wait 30 seconds and try again.");
             }
 
-            if (!response.ok) {
+            if (!n.ok) {
                 throw new Error(data.message || 'Registration failed.');
             }
 
@@ -68,9 +79,9 @@ const Register = () => {
 
         } catch (err) {
             console.error('Registration Error:', err);
-            // This catches the 'Failed to fetch' network error
+            // Specifically handling the "Failed to fetch" network error
             setError(err.message === 'Failed to fetch' 
-                ? 'Cannot connect to server. Please check your internet or backend status.' 
+                ? 'Cannot connect to the backend. The Render server might be waking up (cold start). Please try again in 1 minute.' 
                 : err.message);
         } finally {
             setLoading(false);
@@ -81,6 +92,7 @@ const Register = () => {
         <div className="auth-container">
             <form onSubmit={handleSubmit} className="auth-form">
                 <h1 className="auth-title">Create Your Account</h1>
+                
                 {error && (
                     <div className="error-box" style={{ color: 'red', background: '#ffe6e6', padding: '10px', borderRadius: '5px', marginBottom: '15px', textAlign: 'center' }}>
                         {error}
