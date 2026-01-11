@@ -37,41 +37,41 @@ const Register = () => {
         setError('');
 
         try {
-            const response = await fetch('/api/auth/register', {
+            // --- FIX 1: DYNAMIC API URL ---
+            // Locally it uses the proxy (''), on Vercel it uses your backend URL
+            const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+            
+            const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ firstName, lastName, email, password }),
             });
 
-            // --- FIX: Guard against non-JSON responses (like 404 HTML pages) ---
+            // --- FIX 2: JSON GUARD (Stops the "Unexpected token T" crash) ---
             const contentType = response.headers.get("content-type");
             let data = {};
 
             if (contentType && contentType.includes("application/json")) {
                 data = await response.json();
             } else {
-                // If it's not JSON, it's likely a 404 or 500 HTML error page
-                const textError = await response.text();
-                console.error("Server returned non-JSON:", textError);
-                throw new Error(`Server Error: ${response.status}. Please check if the backend is running.`);
+                // This catches the 404 HTML error page from Vercel
+                throw new Error(`Server Error: ${response.status}. The frontend cannot find the backend.`);
             }
 
             if (!response.ok) {
-                throw new Error(data.message || 'Registration failed due to server error.');
+                throw new Error(data.message || 'Registration failed.');
             }
 
-            // Successfully register and log in
+            // Success logic
             if (data.token) {
                 login(data.token, data.userId);
-                alert('Registration successful! Welcome to Smart Health.');
+                alert('Registration successful!');
                 navigate('/risk-check');
-            } else {
-                throw new Error("No token received from server.");
             }
 
         } catch (err) {
             console.error('Registration Error:', err);
-            setError(err.message || 'An unexpected error occurred during registration.');
+            setError(err.message || 'An unexpected error occurred.');
         } finally {
             setLoading(false);
         }
@@ -81,66 +81,23 @@ const Register = () => {
         <div className="auth-container">
             <form onSubmit={handleSubmit} className="auth-form">
                 <h1 className="auth-title">Create Your Account</h1>
-                <p className="auth-subtitle">Get personalized health tracking and local clinic access.</p>
-
-                {error && <div className="error-box" style={{ color: 'red', marginBottom: '15px' }}>{error}</div>}
+                {error && <div className="error-box" style={{ color: 'red', background: '#ffe6e6', padding: '10px', borderRadius: '5px', marginBottom: '15px' }}>{error}</div>}
 
                 <div className="input-group-row">
-                    <input
-                        type="text"
-                        name="firstName"
-                        value={firstName}
-                        onChange={handleChange}
-                        placeholder="First Name"
-                        required
-                        className="input-field"
-                    />
-                    <input
-                        type="text"
-                        name="lastName"
-                        value={lastName}
-                        onChange={handleChange}
-                        placeholder="Last Name"
-                        required
-                        className="input-field"
-                    />
+                    <input type="text" name="firstName" value={firstName} onChange={handleChange} placeholder="First Name" required className="input-field" />
+                    <input type="text" name="lastName" value={lastName} onChange={handleChange} placeholder="Last Name" required className="input-field" />
                 </div>
                 
-                <input
-                    type="email"
-                    name="email"
-                    value={email}
-                    onChange={handleChange}
-                    placeholder="Email Address"
-                    required
-                    className="input-field"
-                />
-                <input
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={handleChange}
-                    placeholder="Password (Min 6 characters)"
-                    required
-                    minLength="6"
-                    className="input-field"
-                />
-                <input
-                    type="password"
-                    name="confirmPassword"
-                    value={confirmPassword}
-                    onChange={handleChange}
-                    placeholder="Confirm Password"
-                    required
-                    className="input-field"
-                />
+                <input type="email" name="email" value={email} onChange={handleChange} placeholder="Email Address" required className="input-field" />
+                <input type="password" name="password" value={password} onChange={handleChange} placeholder="Password" required minLength="6" className="input-field" />
+                <input type="password" name="confirmPassword" value={confirmPassword} onChange={handleChange} placeholder="Confirm Password" required className="input-field" />
                 
                 <button type="submit" disabled={loading} className="btn btn-primary btn-auth">
                     {loading ? 'Processing...' : 'Register'}
                 </button>
                 
                 <p className="auth-link-text">
-                    Already have an account? <Link to="/login" className="link-secondary">Login here</Link>
+                    Already have an account? <Link to="/login">Login here</Link>
                 </p>
             </form>
         </div>
