@@ -1,212 +1,173 @@
 /* --------------------------------------------------------------------------------
+   --- 0. VARIABLES (Crucial for the colors to work) ---
+   -------------------------------------------------------------------------------- */
+:root {
+    --color-primary: #008080;   /* Deep Teal from your mock-up */
+    --color-secondary: #ff9800; /* Orange/Gold Accent */
+    --color-text: #333333;
+    --white: #ffffff;
+}
+
+/* --------------------------------------------------------------------------------
    --- 1. GENERAL & TYPOGRAPHY ---
    -------------------------------------------------------------------------------- */
 body {
-    background-color: #f8f9fa; /* Very light gray background */
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
 }
 
 .landing-page {
-    /* Ensure the landing page content is centered and contained */
-    max-width: 1200px;
+    max-width: 100%; /* Changed to 100% to let hero stretch, internal containers will center */
     margin: 0 auto;
-    padding: 0;
-    font-family: 'Arial', sans-serif; /* Use a common, clean font */
+    font-family: 'Arial', sans-serif;
 }
 
 /* --------------------------------------------------------------------------------
-   --- 2. HERO SECTION (The Big First Impression) ---
+   --- 2. HERO SECTION ---
    -------------------------------------------------------------------------------- */
 .hero-section {
-    background-color: var(--color-primary); /* Use Teal as the main hero background */
-    color: white;
-    padding: 6rem 1.5rem; /* Generous vertical padding */
-    border-radius: 0 0 50% 50% / 0 0 10% 10%; /* Subtle wave effect at the bottom */
-    margin-bottom: 4rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background-color: var(--color-primary);
+    color: var(--white);
+    padding: 6rem 1.5rem;
+    position: relative;
+    overflow: hidden;
 }
 
-.hero-content {
-    max-width: 800px;
+/* Updated to match your JSX <div className="hero-layout"> */
+.hero-layout {
+    max-width: 1200px;
     margin: 0 auto;
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap; /* Allows stacking on mobile */
 }
 
-.hero-content h1 {
-    font-size: 3.5rem; /* Large, impactful headline */
+/* Updated to match your JSX <div className="hero-text-container"> */
+.hero-text-container {
+    flex: 1;
+    min-width: 300px;
+}
+
+.hero-text-container h1 {
+    font-size: 3.5rem;
     font-weight: 900;
     margin-bottom: 1rem;
-    line-height: 1.2;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-.hero-content p {
-    font-size: 1.3rem;
-    margin-bottom: 2.5rem;
-    font-weight: 300;
+/* Updated to match your JSX <div className="risk-check-card"> */
+.risk-check-card {
+    flex: 1;
+    min-width: 300px;
+    background: var(--white);
+    color: var(--color-text);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-.btn-large {
-    padding: 1rem 2.5rem;
-    font-size: 1.2rem;
-    font-weight: 700;
-    border-radius: 50px; /* Pill shape for CTA */
+.risk-check-card h3 {
+    color: var(--color-primary);
+    margin-top: 0;
 }
 
 /* --------------------------------------------------------------------------------
-   --- 3. CORE FEATURES SECTION ---
+   --- 3. BUTTONS (Matching your JSX Button Class Names) ---
+   -------------------------------------------------------------------------------- */
+.btn-primary-orange {
+    background-color: var(--color-secondary);
+    color: var(--white) !important;
+    padding: 1rem 2rem;
+    font-weight: 700;
+    border-radius: 50px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s;
+}
+
+.btn-primary-orange:hover {
+    background-color: #e68a00;
+}
+
+.btn-secondary-blue {
+    background-color: var(--color-primary);
+    color: var(--white) !important;
+    padding: 1rem 2rem;
+    font-weight: 700;
+    border-radius: 50px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* --------------------------------------------------------------------------------
+   --- 4. FEATURES SECTION ---
    -------------------------------------------------------------------------------- */
 .features-section {
-    padding: 2rem 1.5rem;
+    max-width: 1200px;
+    margin: 4rem auto;
+    padding: 0 1.5rem;
     text-align: center;
-}
-
-.features-section h2 {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--color-text);
-    margin-bottom: 3rem;
-    position: relative;
-}
-
-/* Underline effect for the title */
-.features-section h2::after {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 4px;
-    background-color: var(--color-secondary); /* Use the accent color */
-    margin: 10px auto 0;
-    border-radius: 2px;
 }
 
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px; /* Increased gap */
-    margin-top: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 3rem;
 }
 
 .feature-card {
     background: white;
     padding: 2.5rem;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Soft, professional shadow */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     text-align: left;
-    border-top: 5px solid var(--color-primary); /* Teal top border */
-}
-
-.feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
-
-.feature-card h3 {
-    font-size: 1.8rem;
-    color: var(--color-primary);
-    margin-bottom: 0.75rem;
-    font-weight: 700;
-}
-
-.feature-card p {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 1.5rem;
-    line-height: 1.6;
+    border-top: 5px solid var(--color-primary);
 }
 
 .feature-link {
-    display: inline-block;
-    font-weight: 700;
-    color: var(--color-secondary); /* Accent color for links */
+    color: var(--color-primary);
     text-decoration: none;
-    transition: color 0.2s;
-}
-
-.feature-link:hover {
-    color: #ffb74d; /* Lighter shade of accent color on hover */
+    font-weight: 700;
 }
 
 /* --------------------------------------------------------------------------------
-   --- 4. SAVINGS GOAL CTA (Prominent Bottom Section) ---
+   --- 5. SAVINGS CTA SECTION ---
    -------------------------------------------------------------------------------- */
 .savings-cta-section {
+    background-color: #e0f2f1;
     padding: 5rem 1.5rem;
-    background-color: #e0f2f1; /* Lightest shade of the primary color */
     text-align: center;
-    margin-top: 4rem;
 }
 
-.savings-cta-card {
-    max-width: 1000px;
+/* Updated to match <div className="cta-cards-container"> */
+.cta-cards-container {
+    max-width: 1200px;
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 2rem;
-    align-items: center;
-    justify-content: space-between;
+}
+
+/* Updated to match <div className="cta-card"> */
+.cta-card {
+    background: white;
     padding: 3rem;
     border-radius: 16px;
-    background-color: white;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
-
-.savings-cta-card h3 {
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: var(--color-primary);
-    margin-bottom: 0.75rem;
-}
-
-.savings-cta-card p {
-    font-size: 1.1rem;
-    color: #555;
-    line-height: 1.6;
-}
-
-.cta-action {
-    flex-shrink: 0;
-}
-
-/* Ensure the button is styled correctly */
-.btn-secondary {
-    background-color: var(--color-secondary);
-    color: white;
-    border: 2px solid var(--color-secondary);
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.btn-secondary:hover {
-    background-color: #ffb74d;
-    border-color: #ffb74d;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
 }
 
 /* --------------------------------------------------------------------------------
-   --- 5. MEDIA QUERIES (Responsiveness) ---
+   --- 6. RESPONSIVENESS ---
    -------------------------------------------------------------------------------- */
-@media (min-width: 768px) {
-    .savings-cta-card {
-        flex-direction: row;
-        text-align: left;
-    }
-    .cta-text {
-        flex: 3;
-        padding-right: 2rem;
-    }
-    .cta-action {
-        flex: 1;
-        text-align: right;
-    }
-}
-
-@media (max-width: 600px) {
-    .hero-content h1 {
+@media (max-width: 768px) {
+    .hero-text-container h1 {
         font-size: 2.5rem;
-    }
-    .hero-section {
-        padding: 4rem 1rem;
-    }
-    .features-section h2 {
-        font-size: 2rem;
     }
 }
