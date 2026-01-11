@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // <--- Correct import for hook
+import { useAuth } from '../context/AuthContext'; 
 import '../styles/Auth.css'; 
 
 const Register = () => {
-    // 1. Hook usage MUST be inside the functional component body
-    const { login } = useAuth(); // <--- Use the context hook
+    const { login } = useAuth(); 
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -15,16 +14,15 @@ const Register = () => {
         password: '',
         confirmPassword: '',
     });
+    
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    
-    // We only need one instance of navigate, removed the duplicate declaration
-    
+
     const { firstName, lastName, email, password, confirmPassword } = formData;
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-        setError(''); 
+        if (error) setError(''); 
     };
 
     const handleSubmit = async (e) => {
@@ -45,19 +43,31 @@ const Register = () => {
                 body: JSON.stringify({ firstName, lastName, email, password }),
             });
 
-            const data = await response.json();
+            // --- FIX: Guard against non-JSON responses (like 404 HTML pages) ---
+            const contentType = response.headers.get("content-type");
+            let data = {};
+
+            if (contentType && contentType.includes("application/json")) {
+                data = await response.json();
+            } else {
+                // If it's not JSON, it's likely a 404 or 500 HTML error page
+                const textError = await response.text();
+                console.error("Server returned non-JSON:", textError);
+                throw new Error(`Server Error: ${response.status}. Please check if the backend is running.`);
+            }
 
             if (!response.ok) {
                 throw new Error(data.message || 'Registration failed due to server error.');
             }
 
-            // --- CRITICAL UPDATE: Use context login function ---
-            // The context handles storing the token/userId in localStorage and updates the app state.
-            login(data.token, data.userId);
-            // --- END CRITICAL UPDATE ---
-            
-            alert('Registration successful! Welcome to Smart Health.');
-            navigate('/risk-check');
+            // Successfully register and log in
+            if (data.token) {
+                login(data.token, data.userId);
+                alert('Registration successful! Welcome to Smart Health.');
+                navigate('/risk-check');
+            } else {
+                throw new Error("No token received from server.");
+            }
 
         } catch (err) {
             console.error('Registration Error:', err);
@@ -73,7 +83,7 @@ const Register = () => {
                 <h1 className="auth-title">Create Your Account</h1>
                 <p className="auth-subtitle">Get personalized health tracking and local clinic access.</p>
 
-                {error && <div className="error-box">{error}</div>}
+                {error && <div className="error-box" style={{ color: 'red', marginBottom: '15px' }}>{error}</div>}
 
                 <div className="input-group-row">
                     <input
@@ -126,7 +136,7 @@ const Register = () => {
                 />
                 
                 <button type="submit" disabled={loading} className="btn btn-primary btn-auth">
-                    {loading ? 'Signing Up...' : 'Register'}
+                    {loading ? 'Processing...' : 'Register'}
                 </button>
                 
                 <p className="auth-link-text">
