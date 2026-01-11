@@ -37,9 +37,9 @@ const Register = () => {
         setError('');
 
         try {
-            // --- FIX 1: DYNAMIC API URL ---
-            // Locally it uses the proxy (''), on Vercel it uses your backend URL
-            const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+            // --- CRITICAL: Ensure this points to your LIVE BACKEND URL ---
+            // Example: 'https://your-api-name.onrender.com'
+            const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
             
             const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
                 method: 'POST',
@@ -47,22 +47,19 @@ const Register = () => {
                 body: JSON.stringify({ firstName, lastName, email, password }),
             });
 
-            // --- FIX 2: JSON GUARD (Stops the "Unexpected token T" crash) ---
             const contentType = response.headers.get("content-type");
             let data = {};
 
             if (contentType && contentType.includes("application/json")) {
                 data = await response.json();
             } else {
-                // This catches the 404 HTML error page from Vercel
-                throw new Error(`Server Error: ${response.status}. The frontend cannot find the backend.`);
+                throw new Error(`Server Error: ${response.status}. Backend not responding with JSON.`);
             }
 
             if (!response.ok) {
                 throw new Error(data.message || 'Registration failed.');
             }
 
-            // Success logic
             if (data.token) {
                 login(data.token, data.userId);
                 alert('Registration successful!');
@@ -71,7 +68,10 @@ const Register = () => {
 
         } catch (err) {
             console.error('Registration Error:', err);
-            setError(err.message || 'An unexpected error occurred.');
+            // This catches the 'Failed to fetch' network error
+            setError(err.message === 'Failed to fetch' 
+                ? 'Cannot connect to server. Please check your internet or backend status.' 
+                : err.message);
         } finally {
             setLoading(false);
         }
@@ -81,7 +81,11 @@ const Register = () => {
         <div className="auth-container">
             <form onSubmit={handleSubmit} className="auth-form">
                 <h1 className="auth-title">Create Your Account</h1>
-                {error && <div className="error-box" style={{ color: 'red', background: '#ffe6e6', padding: '10px', borderRadius: '5px', marginBottom: '15px' }}>{error}</div>}
+                {error && (
+                    <div className="error-box" style={{ color: 'red', background: '#ffe6e6', padding: '10px', borderRadius: '5px', marginBottom: '15px', textAlign: 'center' }}>
+                        {error}
+                    </div>
+                )}
 
                 <div className="input-group-row">
                     <input type="text" name="firstName" value={firstName} onChange={handleChange} placeholder="First Name" required className="input-field" />
