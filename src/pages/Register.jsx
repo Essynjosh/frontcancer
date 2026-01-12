@@ -44,7 +44,7 @@ const Register = () => {
 
         try {
             // --- YOUR REQUEST CODE START ---
-            let n = await fetch(`https://backcancer-1.onrender.com/api/auth/register`, {
+            let n = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
                 method: `POST`,
                 headers: {
                     "Content-Type": `application/json`
